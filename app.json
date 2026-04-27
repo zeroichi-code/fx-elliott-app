@@ -30,7 +30,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8961396499785052~9799462411"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

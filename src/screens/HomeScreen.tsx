@@ -9,6 +9,11 @@ import {
   Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const BANNER_AD_UNIT_ID = __DEV__
+  ? TestIds.BANNER
+  : 'ca-app-pub-8961396499785052/1160134074';
 import { useStore } from '../store/useStore';
 import CandlestickChart from '../components/CandlestickChart';
 import SignalPanel from '../components/SignalPanel';
@@ -161,6 +166,13 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <View style={styles.adContainer}>
+        <BannerAd
+          unitId={BANNER_AD_UNIT_ID}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -281,5 +293,9 @@ const styles = StyleSheet.create({
   toggleText: {
     color: '#bdbdbd',
     fontSize: 12,
+  },
+  adContainer: {
+    alignItems: 'center',
+    backgroundColor: '#0a0a0f',
   },
 });
