@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   AppSettings,
   Candle,
@@ -37,70 +39,79 @@ const DEFAULT_SETTINGS: AppSettings = {
   showFibLevels: true,
 };
 
-export const useStore = create<StoreState>((set, get) => ({
-  settings: DEFAULT_SETTINGS,
-  candles: [],
-  pivots: [],
-  impulsePattern: null,
-  correctivePattern: null,
-  signal: null,
-  isLoading: false,
-  error: null,
-  lastUpdated: null,
+export const useStore = create<StoreState>()(
+  persist(
+    (set, get) => ({
+      settings: DEFAULT_SETTINGS,
+      candles: [],
+      pivots: [],
+      impulsePattern: null,
+      correctivePattern: null,
+      signal: null,
+      isLoading: false,
+      error: null,
+      lastUpdated: null,
 
-  updateSettings: (partial) => {
-    set((s) => ({ settings: { ...s.settings, ...partial } }));
-  },
+      updateSettings: (partial) => {
+        set((s) => ({ settings: { ...s.settings, ...partial } }));
+      },
 
-  setPair: (pair) => {
-    set((s) => ({ settings: { ...s.settings, currencyPair: pair } }));
-    get().loadData();
-  },
+      setPair: (pair) => {
+        set((s) => ({ settings: { ...s.settings, currencyPair: pair } }));
+        get().loadData();
+      },
 
-  setTimeFrame: (tf) => {
-    set((s) => ({ settings: { ...s.settings, timeFrame: tf } }));
-    get().loadData();
-  },
+      setTimeFrame: (tf) => {
+        set((s) => ({ settings: { ...s.settings, timeFrame: tf } }));
+        get().loadData();
+      },
 
-  loadData: async () => {
-    const { settings } = get();
-    set({ isLoading: true, error: null });
+      loadData: async () => {
+        const { settings } = get();
+        set({ isLoading: true, error: null });
 
-    try {
-      let candles: Candle[];
+        try {
+          let candles: Candle[];
 
-      if (settings.apiKey === 'demo') {
-        candles = generateDemoCandles(settings.currencyPair, 120);
-      } else {
-        candles = await fetchCandles(
-          settings.currencyPair,
-          settings.timeFrame,
-          settings.apiKey
-        );
-      }
+          if (settings.apiKey === 'demo') {
+            candles = generateDemoCandles(settings.currencyPair, 120);
+          } else {
+            candles = await fetchCandles(
+              settings.currencyPair,
+              settings.timeFrame,
+              settings.apiKey
+            );
+          }
 
-      const { impulsePattern, correctivePattern, pivots } = detectElliottWaves(
-        candles,
-        settings.zigzagThreshold
-      );
+          const { impulsePattern, correctivePattern, pivots } = detectElliottWaves(
+            candles,
+            settings.zigzagThreshold
+          );
 
-      const currentPrice = candles.length > 0 ? candles[candles.length - 1].close : 0;
-      const signal = generateSignal(impulsePattern, correctivePattern, currentPrice);
+          const currentPrice = candles.length > 0 ? candles[candles.length - 1].close : 0;
+          const signal = generateSignal(impulsePattern, correctivePattern, currentPrice);
 
-      set({
-        candles,
-        pivots,
-        impulsePattern,
-        correctivePattern,
-        signal,
-        isLoading: false,
-        lastUpdated: new Date(),
-      });
-    } catch (err) {
-      set({
-        isLoading: false,
-        error: err instanceof Error ? err.message : 'データの取得に失敗しました。',
-      });
+          set({
+            candles,
+            pivots,
+            impulsePattern,
+            correctivePattern,
+            signal,
+            isLoading: false,
+            lastUpdated: new Date(),
+          });
+        } catch (err) {
+          set({
+            isLoading: false,
+            error: err instanceof Error ? err.message : 'データの取得に失敗しました。',
+          });
+        }
+      },
+    }),
+    {
+      name: 'fx-elliott-settings',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ settings: state.settings }),
     }
-  },
-}));
+  )
+);
