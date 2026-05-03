@@ -78,7 +78,7 @@ export default function CandlestickChart({
     const steps = 5;
     return Array.from({ length: steps + 1 }, (_, i) => {
       const price = minP + ((maxP - minP) * i) / steps;
-      return { price, y: toY(price) };
+      return { price, y: priceScale(price, minP, maxP, chartH, PADDING.top) };
     });
   }, [minP, maxP, chartH]);
 

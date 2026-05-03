@@ -237,9 +237,7 @@ function buildImpulseSignal(pattern: ElliottWavePattern, currentPrice: number): 
         direction: isUp ? 'buy' : 'sell',
         reason: '第2波押し目が完了。第3波は最も強い推進波です。高確率の参入チャンス。',
         targetPrice: isUp ? entry + w1Size * 1.618 : entry - w1Size * 1.618,
-        stopLoss: isUp
-          ? pattern.waves[0].startPivot.price
-          : pattern.waves[0].startPivot.price,
+        stopLoss: pattern.waves[0].startPivot.price,
         entryPrice: currentPrice,
       };
     }

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "FX Elliott Wave",
+    "name": "FXエリオット波動チェッカー",
     "slug": "fx-elliott-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.yourcompany.fxelliottwave"
+      "bundleIdentifier": "com.zeroichicode.fxelliottwave"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0a0a0f"
       },
-      "package": "com.yourcompany.fxelliottwave"
+      "package": "com.zeroichicode.fxelliottwave"
     },
     "web": {
       "bundler": "metro",
@@ -36,10 +36,27 @@
         {
           "androidAppId": "ca-app-pub-8961396499785052~9799462411"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.24"
+          }
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "70a9f601-ebc7-4380-8c1a-7966f9822d5c"
+      }
+    },
+    "owner": "zeroichi-code"
   }
 }
