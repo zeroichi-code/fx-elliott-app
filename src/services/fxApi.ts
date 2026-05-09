@@ -1,11 +1,6 @@
 import { Candle, CurrencyPair, TimeFrame } from '../types';
 
-const BASE_URL = 'https://www.alphavantage.co/query';
-
-function parsePair(pair: CurrencyPair): { from: string; to: string } {
-  const [from, to] = pair.split('/');
-  return { from, to };
-}
+const BASE_URL = 'https://api.twelvedata.com/time_series';
 
 function intervalForTimeFrame(tf: TimeFrame): string {
   switch (tf) {
@@ -13,8 +8,10 @@ function intervalForTimeFrame(tf: TimeFrame): string {
     case '5min': return '5min';
     case '15min': return '15min';
     case '30min': return '30min';
-    case '60min': return '60min';
-    default: return '60min';
+    case '60min': return '1h';
+    case 'daily': return '1day';
+    case 'weekly': return '1week';
+    default: return '1day';
   }
 }
 
@@ -24,41 +21,38 @@ export async function fetchCandles(
   apiKey: string,
   outputSize: 'compact' | 'full' = 'compact'
 ): Promise<Candle[]> {
-  const { from, to } = parsePair(pair);
-  let url: string;
-  let dataKey: string;
-
-  if (timeFrame === 'weekly') {
-    url = `${BASE_URL}?function=FX_WEEKLY&from_symbol=${from}&to_symbol=${to}&apikey=${apiKey}`;
-    dataKey = 'Time Series FX (Weekly)';
-  } else if (timeFrame === 'daily') {
-    url = `${BASE_URL}?function=FX_DAILY&from_symbol=${from}&to_symbol=${to}&outputsize=${outputSize}&apikey=${apiKey}`;
-    dataKey = 'Time Series FX (Daily)';
-  } else {
-    const interval = intervalForTimeFrame(timeFrame);
-    url = `${BASE_URL}?function=FX_INTRADAY&from_symbol=${from}&to_symbol=${to}&interval=${interval}&outputsize=${outputSize}&apikey=${apiKey}`;
-    dataKey = `Time Series FX (${interval})`;
-  }
+  const interval = intervalForTimeFrame(timeFrame);
+  const size = outputSize === 'full' ? 5000 : 200;
+  const url = `${BASE_URL}?symbol=${encodeURIComponent(pair)}&interval=${interval}&outputsize=${size}&apikey=${apiKey}&format=JSON`;
 
   const res = await fetch(url);
   if (!res.ok) throw new Error(`APIエラー: ${res.status}`);
 
   const data = await res.json();
 
-  if (data['Note']) throw new Error('APIレート制限に達しました。しばらく待ってから再試行してください。');
-  if (data['Error Message']) throw new Error(data['Error Message']);
-  if (data['Information']) throw new Error('APIキーが無効または制限されています。設定で有効なAPIキーを入力してください。');
+  if (data.status === 'error' || data.code) {
+    const msg: string = data.message || '';
+    if (data.code === 401 || /api ?key/i.test(msg)) {
+      throw new Error('APIキーが無効または制限されています。設定で有効なAPIキーを入力してください。');
+    }
+    if (data.code === 429 || /limit/i.test(msg)) {
+      throw new Error('APIレート制限に達しました。しばらく待ってから再試行してください。');
+    }
+    throw new Error(msg || 'APIエラーが発生しました。');
+  }
 
-  const series = data[dataKey];
-  if (!series) throw new Error('データが返されませんでした。通貨ペアまたは時間足を確認してください。');
+  const values = data.values;
+  if (!values || !Array.isArray(values) || values.length === 0) {
+    throw new Error('データが返されませんでした。通貨ペアまたは時間足を確認してください。');
+  }
 
-  return (Object.entries(series) as [string, Record<string, string>][])
-    .map(([time, v]) => ({
-      time,
-      open: parseFloat(v['1. open']),
-      high: parseFloat(v['2. high']),
-      low: parseFloat(v['3. low']),
-      close: parseFloat(v['4. close']),
+  return values
+    .map((v: Record<string, string>) => ({
+      time: v.datetime,
+      open: parseFloat(v.open),
+      high: parseFloat(v.high),
+      low: parseFloat(v.low),
+      close: parseFloat(v.close),
     }))
     .reverse();
 }

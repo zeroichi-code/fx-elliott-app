@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0a0a0f"
       },
-      "package": "com.zeroichicode.fxelliottwave"
+      "package": "com.zeroichicode.fxelliottwave",
+      "versionCode": 3
     },
     "web": {
       "bundler": "metro",
@@ -41,7 +42,10 @@
         "expo-build-properties",
         {
           "android": {
-            "kotlinVersion": "1.9.24"
+            "kotlinVersion": "1.9.24",
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
           }
         }
       ]

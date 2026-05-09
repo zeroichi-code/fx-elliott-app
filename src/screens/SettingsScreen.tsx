@@ -95,9 +95,9 @@ export default function SettingsScreen() {
 
         {/* API Key */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Alpha Vantage APIキー</Text>
+          <Text style={styles.sectionTitle}>Twelve Data APIキー</Text>
           <Text style={styles.sectionDesc}>
-            無料APIキーは alphavantage.co で取得できます。空白のままだとデモデータが使用されます。
+            無料APIキーは twelvedata.com で取得できます（800リクエスト/日）。空白のままだとデモデータが使用されます。
           </Text>
           <TextInput
             style={styles.input}
