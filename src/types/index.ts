@@ -37,7 +37,7 @@ export interface WaveSignal {
   entryPrice?: number;
 }
 
-export type TimeFrame = '1min' | '5min' | '15min' | '30min' | '60min' | 'daily' | 'weekly';
+export type TimeFrame = '1min' | '5min' | '15min' | '30min' | '60min' | '4h' | 'daily' | 'weekly';
 
 export type CurrencyPair =
   | 'USD/JPY'
@@ -73,6 +73,7 @@ export const TIME_FRAMES: { label: string; value: TimeFrame }[] = [
   { label: '15分', value: '15min' },
   { label: '30分', value: '30min' },
   { label: '1時間', value: '60min' },
+  { label: '4時間', value: '4h' },
   { label: '日足', value: 'daily' },
   { label: '週足', value: 'weekly' },
 ];

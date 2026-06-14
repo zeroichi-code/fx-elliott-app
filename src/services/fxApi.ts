@@ -9,6 +9,7 @@ function intervalForTimeFrame(tf: TimeFrame): string {
     case '15min': return '15min';
     case '30min': return '30min';
     case '60min': return '1h';
+    case '4h': return '4h';
     case 'daily': return '1day';
     case 'weekly': return '1week';
     default: return '1day';
