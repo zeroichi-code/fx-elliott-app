@@ -180,11 +180,11 @@ export function generateSignal(
 ): WaveSignal {
   if (!impulsePattern && !correctivePattern) {
     return {
-      currentWave: '不明',
-      nextWaveLabel: '?',
+      currentWave: 'wave_no_pattern',
+      nextWaveLabel: 'wave_unknown',
       confidence: 0,
       direction: 'wait',
-      reason: '波のパターンが検出できませんでした。データが不足しているか、設定のZigZag感度を調整してください。',
+      reason: 'reason_no_pattern',
     };
   }
 
@@ -199,11 +199,11 @@ export function generateSignal(
   if (correctivePattern) return buildCorrectiveSignal(correctivePattern, currentPrice);
 
   return {
-    currentWave: '不明',
-    nextWaveLabel: '?',
+    currentWave: 'wave_analyzing',
+    nextWaveLabel: 'wave_unknown',
     confidence: 0,
     direction: 'wait',
-    reason: 'パターン分析中です。',
+    reason: 'reason_analyzing',
   };
 }
 
@@ -219,11 +219,11 @@ function buildImpulseSignal(pattern: ElliottWavePattern, currentPrice: number): 
   switch (last.label) {
     case '1':
       return {
-        currentWave: '第1波 完了',
-        nextWaveLabel: '第2波（押し目調整）',
+        currentWave: 'wave1_complete',
+        nextWaveLabel: 'wave2_next',
         confidence,
         direction: 'wait',
-        reason: '第1波が完了しました。第2波の押し目（38.2〜61.8%戻し）を待ってから参入を検討してください。',
+        reason: 'reason_wave1',
         targetPrice: isUp
           ? last.endPivot.price - w1Size * 0.618
           : last.endPivot.price + w1Size * 0.618,
@@ -231,11 +231,11 @@ function buildImpulseSignal(pattern: ElliottWavePattern, currentPrice: number): 
     case '2': {
       const entry = last.endPivot.price;
       return {
-        currentWave: '第2波 完了',
-        nextWaveLabel: '第3波（最強の推進波）',
+        currentWave: 'wave2_complete',
+        nextWaveLabel: 'wave3_next',
         confidence,
         direction: isUp ? 'buy' : 'sell',
-        reason: '第2波押し目が完了。第3波は最も強い推進波です。高確率の参入チャンス。',
+        reason: 'reason_wave2',
         targetPrice: isUp ? entry + w1Size * 1.618 : entry - w1Size * 1.618,
         stopLoss: pattern.waves[0].startPivot.price,
         entryPrice: currentPrice,
@@ -244,11 +244,11 @@ function buildImpulseSignal(pattern: ElliottWavePattern, currentPrice: number): 
     case '3': {
       const w3Size = Math.abs(last.endPivot.price - last.startPivot.price);
       return {
-        currentWave: '第3波 完了',
-        nextWaveLabel: '第4波（調整）',
+        currentWave: 'wave3_complete',
+        nextWaveLabel: 'wave4_next',
         confidence,
         direction: 'wait',
-        reason: '第3波が完了しました。第4波の調整を待ちます。38.2%戻しが目安です。',
+        reason: 'reason_wave3',
         targetPrice: isUp
           ? last.endPivot.price - w3Size * 0.382
           : last.endPivot.price + w3Size * 0.382,
@@ -257,11 +257,11 @@ function buildImpulseSignal(pattern: ElliottWavePattern, currentPrice: number): 
     case '4': {
       const entry = last.endPivot.price;
       return {
-        currentWave: '第4波 完了',
-        nextWaveLabel: '第5波（最終推進波）',
+        currentWave: 'wave4_complete',
+        nextWaveLabel: 'wave5_next',
         confidence,
         direction: isUp ? 'buy' : 'sell',
-        reason: '第4波調整が完了。第5波の最終推進波。利益確定目標を設定して参入。',
+        reason: 'reason_wave4',
         targetPrice: isUp ? entry + w1Size : entry - w1Size,
         stopLoss: isUp
           ? pattern.waves[2].endPivot.price
@@ -271,20 +271,20 @@ function buildImpulseSignal(pattern: ElliottWavePattern, currentPrice: number): 
     }
     case '5':
       return {
-        currentWave: '第5波 完了（推進波終了）',
-        nextWaveLabel: 'A波（修正波開始）',
+        currentWave: 'wave5_complete',
+        nextWaveLabel: 'waveA_next',
         confidence,
         direction: isUp ? 'sell' : 'buy',
-        reason: '5波動の推進波が完了。修正波（A-B-C）の開始が予想されます。逆方向への転換を検討。',
+        reason: 'reason_wave5',
         entryPrice: currentPrice,
       };
     default:
       return {
         currentWave: last.label,
-        nextWaveLabel: '?',
+        nextWaveLabel: 'wave_unknown',
         confidence,
         direction: 'wait',
-        reason: '分析中です。',
+        reason: 'reason_unknown',
       };
   }
 }
@@ -300,11 +300,11 @@ function buildCorrectiveSignal(pattern: ElliottWavePattern, currentPrice: number
   switch (last.label) {
     case 'A':
       return {
-        currentWave: 'A波 完了',
-        nextWaveLabel: 'B波（反発）',
+        currentWave: 'waveA_complete',
+        nextWaveLabel: 'waveB_next',
         confidence,
         direction: 'wait',
-        reason: 'A波が完了しました。B波の反発（A波の38.2〜61.8%）を待ちます。',
+        reason: 'reason_waveA',
         targetPrice: isUpA
           ? last.endPivot.price - aSize * 0.5
           : last.endPivot.price + aSize * 0.5,
@@ -312,11 +312,11 @@ function buildCorrectiveSignal(pattern: ElliottWavePattern, currentPrice: number
     case 'B': {
       const entry = last.endPivot.price;
       return {
-        currentWave: 'B波 完了',
-        nextWaveLabel: 'C波（最終調整）',
+        currentWave: 'waveB_complete',
+        nextWaveLabel: 'waveC_next',
         confidence,
         direction: isUpA ? 'sell' : 'buy',
-        reason: 'B波完了。C波はA波とほぼ同じ値幅が目安。最終調整波への参入チャンス。',
+        reason: 'reason_waveB',
         targetPrice: isUpA ? entry - aSize : entry + aSize,
         stopLoss: pattern.waves[0].startPivot.price,
         entryPrice: currentPrice,
@@ -324,20 +324,20 @@ function buildCorrectiveSignal(pattern: ElliottWavePattern, currentPrice: number
     }
     case 'C':
       return {
-        currentWave: 'C波 完了（修正波終了）',
-        nextWaveLabel: '新たな推進波',
+        currentWave: 'waveC_complete',
+        nextWaveLabel: 'new_impulse',
         confidence,
         direction: isUpA ? 'buy' : 'sell',
-        reason: 'A-B-C修正波が完了しました。新たな推進波の開始が予想されます。トレンド転換シグナル。',
+        reason: 'reason_waveC',
         entryPrice: currentPrice,
       };
     default:
       return {
         currentWave: last.label,
-        nextWaveLabel: '?',
+        nextWaveLabel: 'wave_unknown',
         confidence,
         direction: 'wait',
-        reason: '分析中です。',
+        reason: 'reason_unknown',
       };
   }
 }

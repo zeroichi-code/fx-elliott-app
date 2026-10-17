@@ -20,6 +20,7 @@ import SignalPanel from '../components/SignalPanel';
 import WaveLegend from '../components/WaveLegend';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { TIME_FRAMES, TimeFrame } from '../types';
+import { t, tfLabel } from '../i18n';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -52,7 +53,7 @@ export default function HomeScreen() {
   };
 
   if (isLoading && candles.length === 0) {
-    return <LoadingSpinner message="チャートデータを取得中..." />;
+    return <LoadingSpinner />;
   }
 
   return (
@@ -77,7 +78,7 @@ export default function HomeScreen() {
             )}
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.updateText}>更新: {formatTime(lastUpdated)}</Text>
+            <Text style={styles.updateText}>{t('update')}: {formatTime(lastUpdated)}</Text>
             {settings.apiKey === 'demo' && (
               <View style={styles.demoBadge}>
                 <Text style={styles.demoText}>DEMO</Text>
@@ -115,7 +116,7 @@ export default function HomeScreen() {
                   settings.timeFrame === tf.value && styles.tfTextActive,
                 ]}
               >
-                {tf.label}
+                {tfLabel(tf.value)}
               </Text>
             </TouchableOpacity>
           ))}
@@ -154,7 +155,7 @@ export default function HomeScreen() {
               useStore.getState().updateSettings({ showWaveLabels: !settings.showWaveLabels })
             }
           >
-            <Text style={styles.toggleText}>波ラベル</Text>
+            <Text style={styles.toggleText}>{t('waveLabels')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.toggle, settings.showFibLevels && styles.toggleActive]}
@@ -162,7 +163,7 @@ export default function HomeScreen() {
               useStore.getState().updateSettings({ showFibLevels: !settings.showFibLevels })
             }
           >
-            <Text style={styles.toggleText}>フィボナッチ</Text>
+            <Text style={styles.toggleText}>{t('fibonacci')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

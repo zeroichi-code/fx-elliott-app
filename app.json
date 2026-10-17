@@ -22,7 +22,7 @@
         "backgroundColor": "#0a0a0f"
       },
       "package": "com.zeroichicode.fxelliottwave",
-      "versionCode": 11
+      "versionCode": 18
     },
     "web": {
       "bundler": "metro",
@@ -31,7 +31,6 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
       [
         "react-native-google-mobile-ads",
         {
@@ -43,13 +42,16 @@
         {
           "android": {
             "kotlinVersion": "1.9.24",
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0",
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ]
     ],
+    "newArchEnabled": false,
     "experiments": {
       "typedRoutes": true
     },
