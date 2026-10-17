@@ -22,7 +22,7 @@
         "backgroundColor": "#0a0a0f"
       },
       "package": "com.zeroichicode.fxelliottwave",
-      "versionCode": 18
+      "versionCode": 19
     },
     "web": {
       "bundler": "metro",
