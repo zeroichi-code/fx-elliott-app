@@ -7,3 +7,15 @@ node_modules
 
 expo-env.d.ts
 # @end expo-cli
+
+# secrets (never commit)
+.env
+.env.*
+*.pem
+*.key
+*.p12
+id_rsa*
+*.credentials
+secrets.*
+*.secret
+メモAPIキー.txt
