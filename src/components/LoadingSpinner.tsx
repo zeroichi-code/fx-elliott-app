@@ -1,15 +1,17 @@
 import React from 'react';
 import { ActivityIndicator, View, Text, StyleSheet } from 'react-native';
+import { t } from '../i18n';
 
 interface Props {
   message?: string;
 }
 
-export default function LoadingSpinner({ message = '読み込み中...' }: Props) {
+export default function LoadingSpinner({ message }: Props) {
+  const msg = message ?? t('loading');
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#ffd700" />
-      <Text style={styles.text}>{message}</Text>
+      <Text style={styles.text}>{msg}</Text>
     </View>
   );
 }

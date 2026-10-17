@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0a0a0f"
       },
-      "package": "com.zeroichicode.fxelliottwave"
+      "package": "com.zeroichicode.fxelliottwave",
+      "versionCode": 18
     },
     "web": {
       "bundler": "metro",
@@ -30,7 +31,6 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
       [
         "react-native-google-mobile-ads",
         {
@@ -41,11 +41,17 @@
         "expo-build-properties",
         {
           "android": {
-            "kotlinVersion": "1.9.24"
+            "kotlinVersion": "1.9.24",
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0",
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ]
     ],
+    "newArchEnabled": false,
     "experiments": {
       "typedRoutes": true
     },
