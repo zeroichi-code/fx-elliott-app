@@ -5,6 +5,7 @@ const translations = {
     waveLabels: '波ラベル',
     fibonacci: 'フィボナッチ',
 
+    chart: 'チャート',
     settings: '設定',
     currencyPair: '通貨ペア',
     zigzagSensitivity: 'ZigZag感度',
@@ -83,6 +84,7 @@ const translations = {
     waveLabels: 'Wave Labels',
     fibonacci: 'Fibonacci',
 
+    chart: 'Chart',
     settings: 'Settings',
     currencyPair: 'Currency Pair',
     zigzagSensitivity: 'ZigZag Sensitivity',

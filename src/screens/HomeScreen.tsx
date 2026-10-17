@@ -39,8 +39,13 @@ export default function HomeScreen() {
     setTimeFrame,
   } = useStore();
 
+  // 保存済み設定（通貨ペア等）の復元後にデータを取得する
   useEffect(() => {
-    loadData();
+    if (useStore.persist.hasHydrated()) {
+      loadData();
+      return;
+    }
+    return useStore.persist.onFinishHydration(() => loadData());
   }, []);
 
   const currentPrice = candles.length > 0 ? candles[candles.length - 1].close : null;

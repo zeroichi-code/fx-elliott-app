@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { t } from '../../src/i18n';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -27,7 +28,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'チャート',
+          title: t('chart'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="stats-chart" size={size} color={color} />
           ),
@@ -36,7 +37,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: '設定',
+          title: t('settings'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
